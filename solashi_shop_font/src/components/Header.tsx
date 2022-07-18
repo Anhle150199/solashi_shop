@@ -164,10 +164,9 @@ export const Header = () => {
                         </Link>
 
                     </Container>
-                    <IconButton sx={{display:{ sm:"block", md:"none"}, color:"white", right:"-90%"}} onClick={showMenu}>
+                    <IconButton sx={{display:{ sm:"block", md:"none"}, color:"white", right:"-90%"}} onClick={showMenu}> 
                         <MenuIcon/>
                     </IconButton>
-                    {}
                 </Toolbar>
             </AppBar>
         </Box>
