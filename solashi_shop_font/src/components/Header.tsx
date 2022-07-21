@@ -127,37 +127,37 @@ export const Header = () => {
                                 Home
                             </Typography>
                         </Link>
-                        <Link to='/' style={{ textDecoration: "none"}}>
+                        <Link to='/shop' style={{ textDecoration: "none"}}>
                             <Typography component="span" sx={{ m: 1, mx: 3, whiteSpace:"nowrap"}} color="white">
                                 Our Shop
                             </Typography>
                         </Link>
-                        <Link to='/' style={{ textDecoration: "none"}}>
+                        <Link to='/sale' style={{ textDecoration: "none"}}>
                             <Typography component="span" sx={{ m: 1, mx: 3, whiteSpace:"nowrap" }} color="white">
                                 On Sale
                             </Typography>
                         </Link>
-                        <Link to='/' style={{ textDecoration: "none"}}>
+                        <Link to='/services' style={{ textDecoration: "none"}}>
                             <Typography component="span" sx={{ m: 1, mx: 3, whiteSpace:"nowrap" }} color="white">
                                 Our Services
                             </Typography>
                         </Link>
-                        <Link to='/' style={{ textDecoration: "none"}}>
+                        <Link to='/blog' style={{ textDecoration: "none"}}>
                             <Typography component="span" sx={{ m: 1, mx: 3 }} color="white">
                                 Blog
                             </Typography>
                         </Link>
-                        <Link to='/' style={{ textDecoration: "none"}}>
+                        <Link to='/contact' style={{ textDecoration: "none"}}>
                             <Typography component="span" sx={{ m: 1, mx: 3 }} color="white">
                                 Contact
                             </Typography>
                         </Link>
-                        <Link to='/' style={{ textDecoration: "none"}}>
+                        <Link to='/signin' style={{ textDecoration: "none"}}>
                             <Typography component="span" sx={{ m: 1, mx: 3 }} color="white">
                                 Signin
                             </Typography>
                         </Link>
-                        <Link to='/' style={{ textDecoration: "none"}}>
+                        <Link to='/signup' style={{ textDecoration: "none"}}>
                             <Typography component="span" sx={{ m: 1, mx: 3 }} color="white">
                                 Signup
                             </Typography>
