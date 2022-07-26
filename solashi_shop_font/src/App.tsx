@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { Container } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -8,6 +8,7 @@ import { Home } from './pages/Home';
 import { Signup } from './pages/Auth/Signup';
 import { Signin } from './pages/Auth/Signin';
 import { Footer } from './components/Footer';
+import { Profile } from './pages/Auth/Profile';
 
 const theme = createTheme({
   typography: {
@@ -23,11 +24,14 @@ const theme = createTheme({
 
 });
 
+
 function App() {
+  const [login, setLogin] = useState<boolean>();
+  
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <Header />
+        <Header setLogin={setLogin} login={login} />
         <Routes>
           <Route path='/' element={<Home />} ></Route>
           <Route path='/shop' element={<Home />} ></Route>
@@ -35,8 +39,9 @@ function App() {
           <Route path='/services' element={<Home />} ></Route>
           <Route path='/blog' element={<Home />} ></Route>
           <Route path='/contact' element={<Home />} ></Route>
-          <Route path='/signin' element={<Signin />} ></Route>
+          <Route path='/signin' element={<Signin setLogin={setLogin} login={login} />} ></Route>
           <Route path='/signup' element={<Signup />} ></Route>
+          <Route path='/profile' element={<Profile />} ></Route>
         </Routes>
         <Footer/>
       </div>

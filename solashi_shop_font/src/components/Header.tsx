@@ -1,11 +1,13 @@
-import { AppBar, Badge, Box, Button, Container, FormControl, Grid, IconButton, InputBase, InputLabel, MenuItem, NativeSelect, Select, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, Badge, Box, Button, ClickAwayListener, Container, FormControl, Grid, Grow, IconButton, InputBase, InputLabel, List, MenuItem, MenuList, NativeSelect, Paper, Popper, Select, Stack, Toolbar, Typography } from "@mui/material";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { styled, alpha } from '@mui/material/styles';
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
+import { User } from '../stores/User';
+
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: "50rem",
@@ -46,16 +48,84 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export const Header = () => {
+export const Header = (props:any) => {
+    const { setUser, userCurrent } = User();
     const [money, setmoney] = useState();
-    
+    const [menu, setMenu] = useState<any>([]);
+    const [menuMobile, setMenuMobile] = useState<boolean>();
+
     const handleChangeMoney = (event: any) => {
         console.log(event.target.value);
     }
-    const showMenu = ()=>{
+
+    const showMenu = () => {
         console.log("xxx");
-        
+        setMenuMobile(!menuMobile);
     }
+
+    const createData = (name: string, link: string) => {
+        return { name, link };
+    }
+
+    const data = [
+        createData("Home", "/"),
+        createData("Our Shop", "/shop"),
+        createData("On Sale", "/sale"),
+        createData("Our Services", "/services"),
+        createData("Blog", "/blog"),
+        createData("Contact", "/contact"),];
+    useEffect(() => {
+        if (!userCurrent) {
+            let addData = [
+                ...data,
+                createData("Signin", "/signin"),
+                createData("Signup", "/signup"),];
+            setMenu(addData);
+        } else {
+            setMenu([
+                ...data,
+            ]);
+        }
+    }, [props.login])
+
+    const [open, setOpen] = useState(false);
+    const anchorRef = useRef<HTMLButtonElement>(null);
+
+    const handleToggle = () => {
+        setOpen((prevOpen) => !prevOpen);
+    };
+
+    const handleClose = (event: Event | React.SyntheticEvent) => {
+        if (
+            anchorRef.current &&
+            anchorRef.current.contains(event.target as HTMLElement)
+        ) {
+            return;
+        }
+
+        setOpen(false);
+    };
+
+    function handleListKeyDown(event: React.KeyboardEvent) {
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            setOpen(false);
+        } else if (event.key === 'Escape') {
+            setOpen(false);
+        }
+    }
+
+    // return focus to the button when we transitioned from !open -> open
+    const prevOpen = useRef(open);
+    useEffect(() => {
+        if (prevOpen.current === true && open === false) {
+            anchorRef.current!.focus();
+        }
+
+        prevOpen.current = open;
+    }, [open]);
+
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Container >
@@ -119,56 +189,82 @@ export const Header = () => {
                     </Grid>
                 </Grid>
             </Container>
-            <AppBar position="static" elevation={0} sx={{ bgcolor:"#000000", mt:1}}>
+            <AppBar position="static" elevation={0} sx={{ bgcolor: "#000000", mt: 1 }}>
                 <Toolbar >
-                    <Container sx={{ display:{xs:"none", sm:"none", md:"flex"}, flexWrap:"wrap", justifyContent:"center"}}>
-                        <Link to='/' style={{ textDecoration: "none"}}>
-                            <Typography component="span" sx={{ m: 1, mx: 3 }} color="white">
-                                Home
-                            </Typography>
-                        </Link>
-                        <Link to='/shop' style={{ textDecoration: "none"}}>
-                            <Typography component="span" sx={{ m: 1, mx: 3, whiteSpace:"nowrap"}} color="white">
-                                Our Shop
-                            </Typography>
-                        </Link>
-                        <Link to='/sale' style={{ textDecoration: "none"}}>
-                            <Typography component="span" sx={{ m: 1, mx: 3, whiteSpace:"nowrap" }} color="white">
-                                On Sale
-                            </Typography>
-                        </Link>
-                        <Link to='/services' style={{ textDecoration: "none"}}>
-                            <Typography component="span" sx={{ m: 1, mx: 3, whiteSpace:"nowrap" }} color="white">
-                                Our Services
-                            </Typography>
-                        </Link>
-                        <Link to='/blog' style={{ textDecoration: "none"}}>
-                            <Typography component="span" sx={{ m: 1, mx: 3 }} color="white">
-                                Blog
-                            </Typography>
-                        </Link>
-                        <Link to='/contact' style={{ textDecoration: "none"}}>
-                            <Typography component="span" sx={{ m: 1, mx: 3 }} color="white">
-                                Contact
-                            </Typography>
-                        </Link>
-                        <Link to='/signin' style={{ textDecoration: "none"}}>
-                            <Typography component="span" sx={{ m: 1, mx: 3 }} color="white">
-                                Signin
-                            </Typography>
-                        </Link>
-                        <Link to='/signup' style={{ textDecoration: "none"}}>
-                            <Typography component="span" sx={{ m: 1, mx: 3 }} color="white">
-                                Signup
-                            </Typography>
-                        </Link>
-
+                    <Container >
+                        <List dense={true} sx={{ alignItems: "start", display: { xs: "none", sm: "flex", md: "flex" }, flexWrap: "wrap", justifyContent: "center" }} >
+                            {menu.map((item: any) => (
+                                <Link to={item.link} style={{ textDecoration: "none" }}>
+                                    <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
+                                        {item.name}
+                                    </Typography>
+                                </Link>
+                            ))}
+                            {userCurrent?(
+                            <div>
+                                <Typography component={"span"}
+                                    ref={anchorRef}
+                                    id="composition-button"
+                                    aria-controls={open ? 'composition-menu' : undefined}
+                                    aria-expanded={open ? 'true' : undefined}
+                                    aria-haspopup="true"
+                                    onClick={handleToggle}
+                                >
+                                    Dashboard
+                                </Typography>
+                                <Popper
+                                    open={open}
+                                    anchorEl={anchorRef.current}
+                                    role={undefined}
+                                    placement="bottom-start"
+                                    transition
+                                    disablePortal
+                                >
+                                    {({ TransitionProps, placement }) => (
+                                        <Grow
+                                            {...TransitionProps}
+                                            style={{
+                                                transformOrigin:
+                                                    placement === 'bottom-start' ? 'left top' : 'left bottom',
+                                            }}
+                                        >
+                                            <Paper>
+                                                <ClickAwayListener onClickAway={handleClose}>
+                                                    <MenuList
+                                                        autoFocusItem={open}
+                                                        id="composition-menu"
+                                                        aria-labelledby="composition-button"
+                                                        onKeyDown={handleListKeyDown}
+                                                    >
+                                                        <MenuItem onClick={handleClose}>Profile</MenuItem>
+                                                        <MenuItem onClick={handleClose}>My account</MenuItem>
+                                                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                                                    </MenuList>
+                                                </ClickAwayListener>
+                                            </Paper>
+                                        </Grow>
+                                    )}
+                                </Popper>
+                            </div>
+):''}
+                        </List>
                     </Container>
-                    <IconButton sx={{display:{ sm:"block", md:"none"}, color:"white", right:"-90%"}} onClick={showMenu}> 
-                        <MenuIcon/>
+                    <IconButton sx={{ display: { xs: "block", sm: "none", md: "none" }, color: "white" }} onClick={showMenu}>
+                        <MenuIcon />
                     </IconButton>
-                    
+
                 </Toolbar>
+                <Container sx={{ display: `${menuMobile ? "flex" : "none"}` }}>
+                    <List dense={true} sx={{ alignItems: "start", justifyContent: "center" }}>
+                        {menu.map((item: any) => (
+                            <Link to={item.link} style={{ textDecoration: "none", display: "block" }}>
+                                <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
+                                    {item.name}
+                                </Typography>
+                            </Link>
+                        ))}
+                    </List>
+                </Container>
             </AppBar>
         </Box>
     )

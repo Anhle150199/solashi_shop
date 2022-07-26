@@ -7,14 +7,17 @@ import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
 
 import { Link } from 'react-router-dom';
-import { Password } from '../../components/layouts/Password';
+import { InputComponent } from '../../components/form/InputComponent';
 
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Api } from '../../components/Api';
 import { type } from 'os';
 import { resolve } from 'path';
+import {User} from '../../stores/User';
 
+// Validation form
 const validation = z.object({
     name: z.string().min(1, { message: "The name field is require." }),
     email: z.string().email({ message: "The email field is require." }),
@@ -25,16 +28,29 @@ const validation = z.object({
 type AuthForm = z.infer<typeof validation>;
 
 export const Signup = () => {
-    const { register, watch, handleSubmit, formState: { errors, isSubmitting } } = useForm<AuthForm>({
+    
+    const { http } = Api();
+    const {setUser} = User();
+    const { register, watch, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<AuthForm>({
         resolver: zodResolver(validation)
     });
 
-
     const onSubmit: SubmitHandler<AuthForm> = useCallback(async (value) => {
-        await new Promise(async (resolve) => {
-            await setTimeout(() => {
-                console.log(value);
-            }, 5000);
+        await http.post('/register', {
+            name: value.name,
+            email: value.email,
+            password: value.password,
+            password_confirmation: value.confirm_password
+        }).then((res) => {
+            let data= res.data;
+            setUser({
+                ... data.user,
+                token: data.access_token
+            });
+        }).catch((res) => {
+            let errorsApi = JSON.parse(res.response.request.response).errors;
+            console.log(errorsApi);
+            setError("email", {type: "manual", message: errorsApi.email});
         })
     }, []);
 
@@ -57,78 +73,12 @@ export const Signup = () => {
                         <Box p={3} px={5}>
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <Typography variant="h4" fontSize={24} fontWeight={600} py={1} align='center'>Create an account</Typography>
-                                <FormControl variant="standard" fullWidth sx={{ mb: 2 }} >
-                                    <InputLabel htmlFor="input-with-icon-adornment">
-                                        Name
-                                    </InputLabel>
-                                    <Input
-                                        id="name"
-                                        {...register("name")}
-                                        disabled={isSubmitting}
-                                        startAdornment={
-                                            <InputAdornment position="start" >
-                                                <PersonIcon />
-                                            </InputAdornment>
-                                        }
-                                    />
-                                    <Typography variant="caption" color="error" >{errors.name?.message}</Typography>
-                                </FormControl>
-                                <FormControl variant="standard" fullWidth sx={{ mb: 2 }} >
-                                    <InputLabel htmlFor="input-with-icon-adornment">
-                                        Email
-                                    </InputLabel>
-                                    <Input
-                                        id="email"
-                                        type='email'
-                                        startAdornment={
-                                            <InputAdornment position="start" >
-                                                <EmailIcon />
-                                            </InputAdornment>
-                                        }
-                                        {...register("email")}
-                                        disabled={isSubmitting}
-                                    />
-                                    <Typography variant="caption" color="error" >{errors.email?.message}</Typography>
-                                </FormControl>
-                                <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
-                                    <InputLabel htmlFor="input-with-icon-adornment">
-                                        Password
-                                    </InputLabel>
-                                    <Input
-                                        id="password"
-                                        type='password'
-                                        startAdornment={
-                                            <InputAdornment position="start" >
-                                                <KeyIcon />
-                                            </InputAdornment>
-                                        }
-                                        {...register("password")}
-                                        disabled={isSubmitting}
-                                    />
-                                    <Typography variant="caption" color="error" >{errors.password?.message}</Typography>
-                                </FormControl>
-                                <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
-                                    <InputLabel htmlFor="input-with-icon-adornment">
-                                        Confirm Password
-                                    </InputLabel>
-                                    <Input
-                                        id="confirm_password"
-                                        type='password'
-                                        startAdornment={
-                                            <InputAdornment position="start" >
-                                                <KeyIcon />
-                                            </InputAdornment>
-                                        }
-                                        {...register("confirm_password")}
-                                        disabled={isSubmitting}
-                                    />
-                                    <Typography variant="caption" color="error" >{errors.confirm_password?.message}</Typography>
-                                </FormControl>
-                                {/* <Password id='confirm_password' /> */}
-                                <FormGroup sx={{ mb: 2 }}>
-                                    <FormControlLabel control={<Checkbox />} label="Remember Me" disabled={isSubmitting} />
-                                </FormGroup>
-                                <Button fullWidth sx={{ mb: 2 }} color='error' variant="contained" type='submit' disabled={isSubmitting}>Login</Button>
+
+                                <InputComponent name="name" type="text" label="Name" register= {register} icon={ <PersonIcon />} error={errors.name} value=''/>
+                                <InputComponent name="email" type="email" label="Email" register= {register} icon={ <EmailIcon />} error={errors.email} value='' />
+                                <InputComponent name="password" type="password" label="Password" register= {register} icon={ <KeyIcon />} error={errors.password} value='' />
+                                <InputComponent name="confirm_password" type="password" label="Confirm Password" register= {register} icon={ <PersonIcon />} error={errors.confirm_password} value='' />
+                                <Button fullWidth sx={{ my: 2 }} color='error' variant="contained" type='submit' disabled={isSubmitting}>Register</Button>
                             </form>
                             <Box sx={{ display: "flex", mb: 2 }}>
                                 <Link to="/forgot-password" style={{ width: "100%", textAlign: "end" }}>Forgot Password?</Link>
@@ -142,8 +92,7 @@ export const Signup = () => {
                             </Box>
                             <hr />
                             <Box sx={{ my: 3 }}>
-                                <Typography width="100%" align="center">Check out as a guest? <Link to="/">Click Here</Link> </Typography>
-                                <Typography width="100%" align="center">Don't have an account? <Link to="/">Register Here</Link> </Typography>
+                                <Typography width="100%" align="center">Already have an account?  <Link to="/" style={{ textDecoration: "none"}}>Login Here</Link> </Typography>
                             </Box>
 
                         </Box>

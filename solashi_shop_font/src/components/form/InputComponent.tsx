@@ -1,23 +1,25 @@
-import { FormControl, Input, InputAdornment, InputLabel } from '@mui/material'
+import { FormControl, Input, InputAdornment, InputLabel, Typography } from '@mui/material'
 import React from 'react'
 import KeyIcon from '@mui/icons-material/Key';
 
-export const Password = (id: string, register: any) => {
+export const InputComponent = (props:any) => {
     return (
         <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
             <InputLabel htmlFor="input-with-icon-adornment">
-                Confirm Password
+                {props.label}
             </InputLabel>
             <Input
-                id={id}
-                type='password'
-                {...register("confirm_password")}
+                type={props.type}
+                {...props.register(props.name)}
                 startAdornment={
                     <InputAdornment position="start" >
-                        <KeyIcon />
+                        {props.icon}
                     </InputAdornment>
                 }
+                defaultValue= {props.value ? props.value: null}
             />
+             <Typography variant="caption" color="error" >{props.error?.message}</Typography>
+
         </FormControl>
     )
 }
