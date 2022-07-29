@@ -15,7 +15,7 @@ import * as z from "zod";
 import { Api } from '../../components/Api';
 import { type } from 'os';
 import { resolve } from 'path';
-import {User} from '../../stores/User';
+import { User } from '../../stores/User';
 
 // Validation form
 const validation = z.object({
@@ -28,30 +28,35 @@ const validation = z.object({
 type AuthForm = z.infer<typeof validation>;
 
 export const Signup = () => {
-    
+
     const { http } = Api();
-    const {setUser} = User();
+    const { setUser } = User();
     const { register, watch, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<AuthForm>({
         resolver: zodResolver(validation)
     });
 
     const onSubmit: SubmitHandler<AuthForm> = useCallback(async (value) => {
-        await http.post('/register', {
-            name: value.name,
-            email: value.email,
-            password: value.password,
-            password_confirmation: value.confirm_password
-        }).then((res) => {
-            let data= res.data;
-            setUser({
-                ... data.user,
-                token: data.access_token
+        try {
+            const res = await http.post('/register', {
+                name: value.name,
+                email: value.email,
+                password: value.password,
+                password_confirmation: value.confirm_password
             });
-        }).catch((res) => {
-            let errorsApi = JSON.parse(res.response.request.response).errors;
-            console.log(errorsApi);
-            setError("email", {type: "manual", message: errorsApi.email});
-        })
+            if (res) {
+                let data = res.data;
+                setUser({
+                    ...data.user,
+                    token: data.access_token
+                });
+
+            }
+        } catch (error:any) {
+
+            const errorsApi = error.response.data.errors;
+            console.log(error);
+            setError("email", { type: "manual", message: errorsApi.email });
+        }
     }, []);
 
     return (
@@ -74,10 +79,10 @@ export const Signup = () => {
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <Typography variant="h4" fontSize={24} fontWeight={600} py={1} align='center'>Create an account</Typography>
 
-                                <InputComponent name="name" type="text" label="Name" register= {register} icon={ <PersonIcon />} error={errors.name} value=''/>
-                                <InputComponent name="email" type="email" label="Email" register= {register} icon={ <EmailIcon />} error={errors.email} value='' />
-                                <InputComponent name="password" type="password" label="Password" register= {register} icon={ <KeyIcon />} error={errors.password} value='' />
-                                <InputComponent name="confirm_password" type="password" label="Confirm Password" register= {register} icon={ <PersonIcon />} error={errors.confirm_password} value='' />
+                                <InputComponent name="name" type="text" label="Name" register={register} icon={<PersonIcon />} error={errors.name} value='' />
+                                <InputComponent name="email" type="email" label="Email" register={register} icon={<EmailIcon />} error={errors.email} value='' />
+                                <InputComponent name="password" type="password" label="Password" register={register} icon={<KeyIcon />} error={errors.password} value='' />
+                                <InputComponent name="confirm_password" type="password" label="Confirm Password" register={register} icon={<PersonIcon />} error={errors.confirm_password} value='' />
                                 <Button fullWidth sx={{ my: 2 }} color='error' variant="contained" type='submit' disabled={isSubmitting}>Register</Button>
                             </form>
                             <Box sx={{ display: "flex", mb: 2 }}>
@@ -92,7 +97,7 @@ export const Signup = () => {
                             </Box>
                             <hr />
                             <Box sx={{ my: 3 }}>
-                                <Typography width="100%" align="center">Already have an account?  <Link to="/" style={{ textDecoration: "none"}}>Login Here</Link> </Typography>
+                                <Typography width="100%" align="center">Already have an account?  <Link to="/" style={{ textDecoration: "none" }}>Login Here</Link> </Typography>
                             </Box>
 
                         </Box>

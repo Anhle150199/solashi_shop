@@ -61,14 +61,14 @@ export const Footer = () => {
                         <Grid item xs={12} sm={6} md={3}>
                             <Typography variant='h6' fontWeight={700}>ABOUT</Typography>
                             <Typography mb={3} color={'secondary'}>Online &#38; physical bead shop with the best beads and beading supplies in Zimbabwe ✓ Over 9000 beads for jewelry making ✓ Glass beads ✓ Beading supplies and much more!</Typography>
-                            <img src="https://seamaf.com/frontend/img/cards.png" alt="" />
+                            {/* <img src="https://seamaf.com/frontend/img/cards.png" alt="" /> */}
 
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <Typography variant='h6' fontWeight={700}>USEFUL LINKS</Typography>
                             <List dense={true} style={{ columnCount: '2' }}>
-                                {links.map((link) => (
-                                    <ListItem>
+                                {links.map((link, key) => (
+                                    <ListItem key={key} >
                                         {/* <Link to={link.value}>{link.key}</Link> */}
                                         <Link href={link.value} color={"secondary"} underline="none">{link.key}</Link>
 
@@ -101,8 +101,8 @@ export const Footer = () => {
                             {/* <TableContainer component={Paper}> */}
                             <Table  >
                                 <TableBody>
-                                    {rows.map((row) => (
-                                        <TableRow  >
+                                    {rows.map((row, key) => (
+                                        <TableRow key={key}  >
                                             <TableCell sx={{ color: "red", border: "none", p: 1 }} component="th" scope="row">
                                                 {row.key}
                                             </TableCell>
@@ -120,8 +120,8 @@ export const Footer = () => {
                 <Container  >
                     <Box display={'block'} >
                         <List dense={true} style={{ display: 'flex', alignItems: "start" }} >
-                            {shares.map((share) => (
-                                <Link href={share.link} underline="none" fontSize={13} mx={1} color={'secondary'} style={{ display: 'flex', alignItems: "center" }}>
+                            {shares.map((share, key) => (
+                                <Link href={share.link} key={key}  underline="none" fontSize={13} mx={1} color={'secondary'} style={{ display: 'flex', alignItems: "center" }}>
                                     {share.icon}
                                     <Typography mx={1} component={"span"} sx={{ display: { xs: 'none', sm: 'none', md: 'contents' } }}>{share.name}</Typography>
                                 </Link>

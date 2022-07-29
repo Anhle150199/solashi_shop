@@ -6,13 +6,16 @@ import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
 
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Api } from '../../components/Api';
 import { User } from '../../stores/User';
 import { InputComponent } from '../../components/form/InputComponent';
+import { loginSelector } from "../../redux/selectors";
+import { useDispatch, useSelector } from "react-redux";
+import AuthSlice from "../../redux/slice/AuthSlice";
 
 // Validation form
 const validation = z.object({
@@ -23,7 +26,8 @@ const validation = z.object({
 
 type AuthForm = z.infer<typeof validation>;
 
-export const Signin = (props:any) => {
+export const Signin = (props: any) => {
+    let navigate = useNavigate();
 
     const { setUser } = User();
     const { http } = Api();
@@ -31,30 +35,34 @@ export const Signin = (props:any) => {
         resolver: zodResolver(validation)
     });
     const [statusLogin, setStatusLogin] = useState<string>('');
+    const login = useSelector(loginSelector);
+    const dispatch = useDispatch();
 
     const onSubmit: SubmitHandler<AuthForm> = useCallback(async (value) => {
-        console.log(value);
-        
-        setStatusLogin('');
-        await http.post('/login', {
-            email: value.email,
-            password: value.password,
-            remember: value.remember,
-        }).then((res) => {
-            console.log(res);
-            let data = res.data;
-            setUser({
-                ...data.user,
-                token: data.access_token
-            });
-            props.setLogin(true);
-            console.log(props.login);
-            
+        try {
+            setStatusLogin('');
+            const res = await http.post('/login', {
+                email: value.email,
+                password: value.password,
+                remember: value.remember,
+            })
 
-        }).catch((res) => {
-            console.log(res);
+            if (res) {
+                console.log(res);
+
+                const data = res.data;
+                setUser({
+                    ...data.user,
+                    token: data.access_token
+                });
+                dispatch(AuthSlice.actions.setLogin(true))
+                return navigate("/");
+            }
+        } catch (error) {
+            console.log(error);
+
             setStatusLogin("Incorrect email or password.");
-        })
+        }
     }, []);
 
     return (

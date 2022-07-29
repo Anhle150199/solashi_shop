@@ -1,12 +1,20 @@
-import { AppBar, Badge, Box, Button, ClickAwayListener, Container, FormControl, Grid, Grow, IconButton, InputBase, InputLabel, List, MenuItem, MenuList, NativeSelect, Paper, Popper, Select, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, Badge, Box, ClickAwayListener, Container, FormControl, Grid, Grow, IconButton, InputBase, InputLabel, List, MenuItem, MenuList, NativeSelect, Paper, Popper, Select, Stack, Toolbar, Typography } from "@mui/material";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { styled, alpha } from '@mui/material/styles';
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 import SearchIcon from '@mui/icons-material/Search';
+import PersonIcon from '@mui/icons-material/Person';
+
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
 import { User } from '../stores/User';
+import { Api } from "./Api";
+import { loginSelector } from "../redux/selectors";
+import { useDispatch, useSelector } from "react-redux";
+import AuthSlice from "../redux/slice/AuthSlice";
+import { AccountDropdown } from "./header/AccountDropdown";
+
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -48,11 +56,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export const Header = (props:any) => {
+export const Header = (props: any) => {
     const { setUser, userCurrent } = User();
     const [money, setmoney] = useState();
-    const [menu, setMenu] = useState<any>([]);
     const [menuMobile, setMenuMobile] = useState<boolean>();
+    const { httpAuth } = Api();
+    const login = useSelector(loginSelector);
+    const dispatch = useDispatch();
 
     const handleChangeMoney = (event: any) => {
         console.log(event.target.value);
@@ -67,63 +77,27 @@ export const Header = (props:any) => {
         return { name, link };
     }
 
-    const data = [
+    const dataMenuAuth = [
         createData("Home", "/"),
         createData("Our Shop", "/shop"),
         createData("On Sale", "/sale"),
         createData("Our Services", "/services"),
         createData("Blog", "/blog"),
-        createData("Contact", "/contact"),];
+        createData("Contact", "/contact"),
+    ];
+    const dataMenuGuest = [
+        ...dataMenuAuth,
+        createData("Signin", "/signin"),
+        createData("Signup", "/signup"),
+
+    ]
     useEffect(() => {
         if (!userCurrent) {
-            let addData = [
-                ...data,
-                createData("Signin", "/signin"),
-                createData("Signup", "/signup"),];
-            setMenu(addData);
+            dispatch(AuthSlice.actions.setLogin(false))
         } else {
-            setMenu([
-                ...data,
-            ]);
+            dispatch(AuthSlice.actions.setLogin(true))
         }
-    }, [props.login])
-
-    const [open, setOpen] = useState(false);
-    const anchorRef = useRef<HTMLButtonElement>(null);
-
-    const handleToggle = () => {
-        setOpen((prevOpen) => !prevOpen);
-    };
-
-    const handleClose = (event: Event | React.SyntheticEvent) => {
-        if (
-            anchorRef.current &&
-            anchorRef.current.contains(event.target as HTMLElement)
-        ) {
-            return;
-        }
-
-        setOpen(false);
-    };
-
-    function handleListKeyDown(event: React.KeyboardEvent) {
-        if (event.key === 'Tab') {
-            event.preventDefault();
-            setOpen(false);
-        } else if (event.key === 'Escape') {
-            setOpen(false);
-        }
-    }
-
-    // return focus to the button when we transitioned from !open -> open
-    const prevOpen = useRef(open);
-    useEffect(() => {
-        if (prevOpen.current === true && open === false) {
-            anchorRef.current!.focus();
-        }
-
-        prevOpen.current = open;
-    }, [open]);
+    }, [])
 
 
     return (
@@ -192,79 +166,68 @@ export const Header = (props:any) => {
             <AppBar position="static" elevation={0} sx={{ bgcolor: "#000000", mt: 1 }}>
                 <Toolbar >
                     <Container >
-                        <List dense={true} sx={{ alignItems: "start", display: { xs: "none", sm: "flex", md: "flex" }, flexWrap: "wrap", justifyContent: "center" }} >
-                            {menu.map((item: any) => (
-                                <Link to={item.link} style={{ textDecoration: "none" }}>
-                                    <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
-                                        {item.name}
-                                    </Typography>
-                                </Link>
-                            ))}
-                            {userCurrent?(
-                            <div>
-                                <Typography component={"span"}
-                                    ref={anchorRef}
-                                    id="composition-button"
-                                    aria-controls={open ? 'composition-menu' : undefined}
-                                    aria-expanded={open ? 'true' : undefined}
-                                    aria-haspopup="true"
-                                    onClick={handleToggle}
-                                >
-                                    Dashboard
-                                </Typography>
-                                <Popper
-                                    open={open}
-                                    anchorEl={anchorRef.current}
-                                    role={undefined}
-                                    placement="bottom-start"
-                                    transition
-                                    disablePortal
-                                >
-                                    {({ TransitionProps, placement }) => (
-                                        <Grow
-                                            {...TransitionProps}
-                                            style={{
-                                                transformOrigin:
-                                                    placement === 'bottom-start' ? 'left top' : 'left bottom',
-                                            }}
-                                        >
-                                            <Paper>
-                                                <ClickAwayListener onClickAway={handleClose}>
-                                                    <MenuList
-                                                        autoFocusItem={open}
-                                                        id="composition-menu"
-                                                        aria-labelledby="composition-button"
-                                                        onKeyDown={handleListKeyDown}
-                                                    >
-                                                        <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                                        <MenuItem onClick={handleClose}>My account</MenuItem>
-                                                        <MenuItem onClick={handleClose}>Logout</MenuItem>
-                                                    </MenuList>
-                                                </ClickAwayListener>
-                                            </Paper>
-                                        </Grow>
-                                    )}
-                                </Popper>
-                            </div>
-):''}
-                        </List>
+                        {login ?
+                            (<List dense={true} sx={{ alignItems: "start", display: { xs: "none", sm: "flex", md: "flex" }, flexWrap: "wrap", justifyContent: "center" }} >
+
+                                {dataMenuAuth.map((item: any) => (
+                                    <Link to={item.link} style={{ textDecoration: "none" }} >
+                                        <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
+                                            {item.name}
+                                        </Typography>
+                                    </Link>
+                                ))}
+                                < AccountDropdown />
+                            </List>) : (
+                                <List dense={true} sx={{ alignItems: "start", display: { xs: "none", sm: "flex", md: "flex" }, flexWrap: "wrap", justifyContent: "center" }} >
+
+                                    {dataMenuGuest.map((item: any) => (
+                                        <Link to={item.link} style={{ textDecoration: "none" }} >
+                                            <Typography component="span" sx={{ m: 1, mx: 3, }}>
+                                                {item.name}
+                                            </Typography>
+                                        </Link>
+                                    ))}
+                                </List>
+                            )}
                     </Container>
                     <IconButton sx={{ display: { xs: "block", sm: "none", md: "none" }, color: "white" }} onClick={showMenu}>
                         <MenuIcon />
                     </IconButton>
 
                 </Toolbar>
-                <Container sx={{ display: `${menuMobile ? "flex" : "none"}` }}>
-                    <List dense={true} sx={{ alignItems: "start", justifyContent: "center" }}>
-                        {menu.map((item: any) => (
-                            <Link to={item.link} style={{ textDecoration: "none", display: "block" }}>
+                {/* <Container sx={{ display: `${menuMobile ? "flex" : "none"}` }}>
+                    <List dense={true} sx={{ alignItems: "start", justifyContent: "center", display: { xs: 'content', sm: "none" } }}>
+                        
+                        {dataMenu.map((item: any, key: number) => (
+                            <Link key={key} to={item.link} style={{ textDecoration: "none", display: "block" }}>
                                 <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
                                     {item.name}
                                 </Typography>
                             </Link>
                         ))}
+
+                        {login && (<Box>
+                            <Link to={'/'} style={{ textDecoration: "none", display: "block" }}>
+                                <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
+                                    Profile
+                                </Typography>
+                            </Link>
+                            <Link to={'/'} style={{ textDecoration: "none", display: "block" }}>
+                                <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
+                                    My account
+                                </Typography>
+                            </Link>
+                            <Link to={'#'} style={{ textDecoration: "none", display: "block" }}>
+
+                                <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
+                                    Logout
+                                </Typography>
+                            </Link>
+
+                        </Box>
+                        )}
                     </List>
-                </Container>
+                </Container> */}
             </AppBar>
         </Box>
     )

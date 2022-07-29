@@ -12,9 +12,13 @@ export const User = () => {
     function setUser(user: JSON) {
         localStorage.setItem('token', JSON.stringify(user));
     }
+    function delUser() {
+        localStorage.removeItem('token')
+    }
 
     return {
-        setUser: setUser,
-        userCurrent
+        setUser,
+        userCurrent,
+        delUser
     }
 }

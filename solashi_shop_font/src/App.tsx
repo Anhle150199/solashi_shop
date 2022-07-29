@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Header } from './components/Header';
 import { Container } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -9,6 +9,9 @@ import { Signup } from './pages/Auth/Signup';
 import { Signin } from './pages/Auth/Signin';
 import { Footer } from './components/Footer';
 import { Profile } from './pages/Auth/Profile';
+import { User } from './stores/User';
+import { loginSelector } from "./redux/selectors";
+import { useSelector } from 'react-redux';
 
 const theme = createTheme({
   typography: {
@@ -26,12 +29,13 @@ const theme = createTheme({
 
 
 function App() {
-  const [login, setLogin] = useState<boolean>();
-  
+
+  const login = useSelector(loginSelector);
+
   return (
     <ThemeProvider theme={theme}>
       <div>
-        <Header setLogin={setLogin} login={login} />
+        <Header />
         <Routes>
           <Route path='/' element={<Home />} ></Route>
           <Route path='/shop' element={<Home />} ></Route>
@@ -39,11 +43,18 @@ function App() {
           <Route path='/services' element={<Home />} ></Route>
           <Route path='/blog' element={<Home />} ></Route>
           <Route path='/contact' element={<Home />} ></Route>
-          <Route path='/signin' element={<Signin setLogin={setLogin} login={login} />} ></Route>
-          <Route path='/signup' element={<Signup />} ></Route>
-          <Route path='/profile' element={<Profile />} ></Route>
         </Routes>
-        <Footer/>
+        {login ? (
+          <Routes>
+            <Route path='/profile' element={<Profile />} ></Route>
+          </Routes>
+        ) : (
+          <Routes>
+            <Route path='/signin' element={<Signin />} ></Route>
+            <Route path='/signup' element={<Signup />} ></Route>
+          </Routes>
+        )}
+        <Footer />
       </div>
     </ThemeProvider>
 
