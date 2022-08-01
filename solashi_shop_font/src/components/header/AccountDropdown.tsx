@@ -2,16 +2,20 @@ import { ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper, Typography 
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import AuthSlice from '../../redux/slice/AuthSlice';
-import { User } from '../../stores/User';
+// import { User } from '../../stores/User';
 import { loginSelector } from "../../redux/selectors";
 import { Link, useNavigate } from 'react-router-dom';
+import { AuthContextType } from '../../@types/auth';
+import { AuthContext } from '../../context/authContext';
 
 export const AccountDropdown = () => {
     let navigate = useNavigate();
 
     const [open, setOpen] = useState(false);
     const anchorRef = useRef<HTMLButtonElement>(null);
-    const { delUser } = User();
+    // const { delUser } = User();
+    const { delUser } = React.useContext(AuthContext) as AuthContextType;
+
     const login = useSelector(loginSelector);
     const dispatch = useDispatch();
 
@@ -42,7 +46,7 @@ export const AccountDropdown = () => {
     const handleLogout = async (event: Event | React.SyntheticEvent) => {
         handleClose(event);
         // await httpAuth.post('/logout', {}).then((res) => {
-        dispatch(AuthSlice.actions.setLogin(false));
+        // dispatch(AuthSlice.actions.setLogin(false));
         delUser();
         // });
         console.log('logout');
@@ -63,19 +67,21 @@ export const AccountDropdown = () => {
     }, [open]);
 
     return (
-        <div>                                    <Typography component={"span"}
-            ref={anchorRef}
-            id="composition-button"
-            aria-controls={open ? 'composition-menu' : undefined}
-            aria-expanded={open ? 'true' : undefined}
-            aria-haspopup="true"
-            onClick={handleToggle}
-            style={{ 'cursor': 'pointer' }}
-            display={'flex'}
-            alignItems={'center'}
-        >
-            {/* <PersonIcon />{userCurrent.name} */}Account
-        </Typography>
+        <div>
+            <Typography component={"span"}
+                ref={anchorRef}
+                id="composition-button"
+                aria-controls={open ? 'composition-menu' : undefined}
+                aria-expanded={open ? 'true' : undefined}
+                aria-haspopup="true"
+                onClick={handleToggle}
+                style={{ 'cursor': 'pointer' }}
+                display={'flex'}
+                alignItems={'center'}
+                sx={{ mx: 3, }}
+            >
+                Account
+            </Typography >
             <Popper
                 open={open}
                 anchorEl={anchorRef.current}

@@ -1,9 +1,12 @@
 import axios from 'axios'
 import React from 'react'
-import { User } from '../stores/User'
+import { AnyIfEmpty } from 'react-redux';
+// import { User } from '../stores/User'
 
 export const Api = () => {
-    const {userCurrent} = User();
+    const token = localStorage.getItem('token');
+
+    // const {userCurrent} = User();
     const http = axios.create({
         baseURL: "http://localhost:8000/api",
         headers: {
@@ -14,7 +17,7 @@ export const Api = () => {
         baseURL: "http://localhost:8000/api",
         headers: {
             "Content-type": "application/json",
-            "Authorization": `Bearer ${userCurrent?.token}`
+            "Authorization": `Bearer ${token}`
         }
     })
     return {http, httpAuth};

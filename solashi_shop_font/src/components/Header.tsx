@@ -3,18 +3,14 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { styled, alpha } from '@mui/material/styles';
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 import SearchIcon from '@mui/icons-material/Search';
-import PersonIcon from '@mui/icons-material/Person';
 
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import MenuIcon from '@mui/icons-material/Menu';
-import { User } from '../stores/User';
 import { Api } from "./Api";
-import { loginSelector } from "../redux/selectors";
-import { useDispatch, useSelector } from "react-redux";
-import AuthSlice from "../redux/slice/AuthSlice";
 import { AccountDropdown } from "./header/AccountDropdown";
-
+import { AuthContextType } from "../@types/auth";
+import { AuthContext } from "../context/authContext";
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -57,12 +53,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export const Header = (props: any) => {
-    const { setUser, userCurrent } = User();
+    // const { userCurrent } = User();
     const [money, setmoney] = useState();
     const [menuMobile, setMenuMobile] = useState<boolean>();
     const { httpAuth } = Api();
-    const login = useSelector(loginSelector);
-    const dispatch = useDispatch();
+    // const login = useSelector(loginSelector);
+    // const dispatch = useDispatch();
+    const { loginStatus, setLoginStatus, delUser, getMe, user } = React.useContext(AuthContext) as AuthContextType;
 
     const handleChangeMoney = (event: any) => {
         console.log(event.target.value);
@@ -92,19 +89,17 @@ export const Header = (props: any) => {
 
     ]
     useEffect(() => {
-        if (!userCurrent) {
-            dispatch(AuthSlice.actions.setLogin(false))
-        } else {
-            dispatch(AuthSlice.actions.setLogin(true))
+        const token = localStorage.getItem('token');
+        if (token) {
+            setLoginStatus(true);
         }
     }, [])
-
 
     return (
         <Box sx={{ flexGrow: 1 }}>
             <Container >
                 <Grid container alignItems='center' sx={{ mt: 1 }}>
-                    <Grid item xs={12} sm={2} sx={{ mt: 2 }} >
+                    <Grid item sm={12} md={2} sx={{ mt: 2 }} >
                         <Typography
                             flex={1}
                             variant="h6"
@@ -166,7 +161,7 @@ export const Header = (props: any) => {
             <AppBar position="static" elevation={0} sx={{ bgcolor: "#000000", mt: 1 }}>
                 <Toolbar >
                     <Container >
-                        {login ?
+                        {loginStatus ?
                             (<List dense={true} sx={{ alignItems: "start", display: { xs: "none", sm: "flex", md: "flex" }, flexWrap: "wrap", justifyContent: "center" }} >
 
                                 {dataMenuAuth.map((item: any) => (
@@ -195,39 +190,32 @@ export const Header = (props: any) => {
                     </IconButton>
 
                 </Toolbar>
-                {/* <Container sx={{ display: `${menuMobile ? "flex" : "none"}` }}>
-                    <List dense={true} sx={{ alignItems: "start", justifyContent: "center", display: { xs: 'content', sm: "none" } }}>
-                        
-                        {dataMenu.map((item: any, key: number) => (
-                            <Link key={key} to={item.link} style={{ textDecoration: "none", display: "block" }}>
-                                <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
-                                    {item.name}
-                                </Typography>
-                            </Link>
-                        ))}
 
-                        {login && (<Box>
-                            <Link to={'/'} style={{ textDecoration: "none", display: "block" }}>
-                                <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
-                                    Profile
-                                </Typography>
-                            </Link>
-                            <Link to={'/'} style={{ textDecoration: "none", display: "block" }}>
-                                <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
-                                    My account
-                                </Typography>
-                            </Link>
-                            <Link to={'#'} style={{ textDecoration: "none", display: "block" }}>
+                <Container sx={{ display: `${menuMobile ? "flex" : "none"}` }} >
+                    {loginStatus ?
+                        (<List dense={true} sx={{ alignItems: "start", display: { xs: "block", sm: "none" }, justifyContent: "flex-start" }} >
 
-                                <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
-                                    Logout
-                                </Typography>
-                            </Link>
+                            {dataMenuAuth.map((item: any) => (
+                                <Link to={item.link} style={{ textDecoration: "none" }} >
+                                    <Typography component="span" sx={{ m: 1, mx: 3, }} color="white" display={"block"}>
+                                        {item.name}
+                                    </Typography>
+                                </Link>
+                            ))}
+                            < AccountDropdown />
+                        </List>) : (
+                            <List dense={true} sx={{ alignItems: "start", display: { xs: "block", sm: "none" }, justifyContent: "flex-start" }} >
 
-                        </Box>
+                                {dataMenuGuest.map((item: any) => (
+                                    <Link to={item.link} style={{ textDecoration: "none" }} >
+                                        <Typography component="span" sx={{ m: 1, mx: 3, }} display={"block"}>
+                                            {item.name}
+                                        </Typography>
+                                    </Link>
+                                ))}
+                            </List>
                         )}
-                    </List>
-                </Container> */}
+                </Container>
             </AppBar>
         </Box>
     )

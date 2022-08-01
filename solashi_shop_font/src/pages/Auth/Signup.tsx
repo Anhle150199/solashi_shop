@@ -6,7 +6,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { InputComponent } from '../../components/form/InputComponent';
 
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -15,7 +15,9 @@ import * as z from "zod";
 import { Api } from '../../components/Api';
 import { type } from 'os';
 import { resolve } from 'path';
-import { User } from '../../stores/User';
+// import { User } from '../../stores/User';
+import { AuthContext } from '../../context/authContext';
+import { AuthContextType } from '../../@types/auth';
 
 // Validation form
 const validation = z.object({
@@ -28,13 +30,16 @@ const validation = z.object({
 type AuthForm = z.infer<typeof validation>;
 
 export const Signup = () => {
+    let navigate = useNavigate();
 
     const { http } = Api();
-    const { setUser } = User();
+    // const { setUser } = User();
     const { register, watch, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<AuthForm>({
         resolver: zodResolver(validation)
     });
-
+    const { loginStatus, saveUser } = React.useContext(AuthContext) as AuthContextType;
+    // console.log(loginStatus);
+    
     const onSubmit: SubmitHandler<AuthForm> = useCallback(async (value) => {
         try {
             const res = await http.post('/register', {
@@ -44,13 +49,17 @@ export const Signup = () => {
                 password_confirmation: value.confirm_password
             });
             if (res) {
+                console.log(res);
+                
                 let data = res.data;
-                setUser({
+                saveUser({
                     ...data.user,
                     token: data.access_token
                 });
+                return navigate("/");
 
             }
+
         } catch (error:any) {
 
             const errorsApi = error.response.data.errors;

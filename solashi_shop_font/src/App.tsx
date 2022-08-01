@@ -9,9 +9,11 @@ import { Signup } from './pages/Auth/Signup';
 import { Signin } from './pages/Auth/Signin';
 import { Footer } from './components/Footer';
 import { Profile } from './pages/Auth/Profile';
-import { User } from './stores/User';
-import { loginSelector } from "./redux/selectors";
-import { useSelector } from 'react-redux';
+// import { User } from './stores/User';
+// import { loginSelector } from "./redux/selectors";
+// import { useSelector } from 'react-redux';
+import AuthProvider from './context/authContext';
+import { AuthMiddleComponent } from './components/AuthMiddleComponent';
 
 const theme = createTheme({
   typography: {
@@ -27,35 +29,28 @@ const theme = createTheme({
 
 });
 
-
 function App() {
-
-  const login = useSelector(loginSelector);
-
+  // const login = useSelector(loginSelector);
   return (
     <ThemeProvider theme={theme}>
-      <div>
-        <Header />
-        <Routes>
-          <Route path='/' element={<Home />} ></Route>
-          <Route path='/shop' element={<Home />} ></Route>
-          <Route path='/sale' element={<Home />} ></Route>
-          <Route path='/services' element={<Home />} ></Route>
-          <Route path='/blog' element={<Home />} ></Route>
-          <Route path='/contact' element={<Home />} ></Route>
-        </Routes>
-        {login ? (
+      <AuthProvider>
+        <main className='App'>
+          <Header />
           <Routes>
-            <Route path='/profile' element={<Profile />} ></Route>
-          </Routes>
-        ) : (
-          <Routes>
+            <Route path='/' element={<Home />} ></Route>
+            <Route path='/shop' element={<Home />} ></Route>
+            <Route path='/sale' element={<Home />} ></Route>
+            <Route path='/services' element={<Home />} ></Route>
+            <Route path='/blog' element={<Home />} ></Route>
+            <Route path='/contact' element={<Home />} ></Route>
+
+            <Route path='/profile' element={<AuthMiddleComponent><Profile /></AuthMiddleComponent>} ></Route>
             <Route path='/signin' element={<Signin />} ></Route>
             <Route path='/signup' element={<Signup />} ></Route>
           </Routes>
-        )}
-        <Footer />
-      </div>
+          <Footer />
+        </main>
+      </AuthProvider>
     </ThemeProvider>
 
   );
