@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -57,13 +58,17 @@ class AuthController extends Controller
         ]);
         if ($validation->fails()) {
             return response()->json(['errors'=>$validation->getMessageBag()->toArray()], 406);
-            return response()->json(['errors'], 401);
+            return response()->json(['errors'], 422);
         }
         $credentials = $request->only(['email', 'password']);
 
-        if (! $token = auth()->attempt(['email'=>$request->email, 'password'=>$request->password], $request->remember)) {
+        if (! $token = JWTAuth::attempt(['email'=>$request->email, 'password'=>$request->password], $request->remember)) {
             return response()->json(['error' => 'Not find account'], 401);
         }
+
+        // if($token == true){
+        //     return
+        // }
 
         return $this->respondWithToken($token);
     }
@@ -75,7 +80,7 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        return response()->json(JWTAuth::user());
     }
 
     /**
@@ -97,7 +102,7 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(Auth::refresh());
+        return $this->respondWithToken(auth()->refresh());
     }
 
     /**
@@ -112,8 +117,8 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => Auth::factory()->getTTL() * 60,
-            'user'=> Auth::user(),
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'user'=> JWTAuth::user(),
         ]);
     }
 }
