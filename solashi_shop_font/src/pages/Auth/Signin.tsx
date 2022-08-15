@@ -28,19 +28,16 @@ export const Signin = (props: any) => {
     let navigate = useNavigate();
     const { saveUser } = React.useContext(AuthContext) as AuthContextType;
 
-    const { http } = Api();
     const { register, watch, handleSubmit, formState: { errors, isSubmitting, isValid } } = useForm<AuthForm>({
         resolver: zodResolver(validation)
     });
 
     const onSubmit: SubmitHandler<AuthForm> = useCallback(async (value) => {
-        try {
-            const res = await http.post('/login', {
+            const res = await Api.post('/login', {
                 email: value.email,
                 password: value.password,
                 remember: value.remember,
             })
-
             if (res) {
                 console.log(res);
                 const data = res.data;
@@ -50,16 +47,14 @@ export const Signin = (props: any) => {
                 })
                 return navigate("/");
             }
-        } catch (error) {
-            console.log(error);
-            alert("Incorrect email or password.")
-        }
     }, []);
+    // useEffect(()=>{
+    //     console.log(isSubmitting, isValid);
 
+    // }, [isSubmitting]);
     return (
         <Container sx={{ my: 3 }}>
             <Card sx={{ borderRadius: '20px', mx: 4 }}>
-                {/* <CardContent sx={{p:0, pb:0}}> */}
                 <Grid container alignItems='center' justifyContent="space-between" sx={{ minHeight: "200px", display: 'table' }}>
                     <Grid item xs={12} sm={6}
                         sx={{
@@ -102,7 +97,6 @@ export const Signin = (props: any) => {
                         </Box>
                     </Grid>
                 </Grid>
-                {/* </CardContent> */}
             </Card>
         </Container>
     )

@@ -1,23 +1,14 @@
 import { ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper, Typography } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import AuthSlice from '../../redux/slice/AuthSlice';
-// import { User } from '../../stores/User';
-import { loginSelector } from "../../redux/selectors";
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContextType } from '../../@types/auth';
 import { AuthContext } from '../../context/authContext';
 
 export const AccountDropdown = () => {
     let navigate = useNavigate();
-
     const [open, setOpen] = useState(false);
     const anchorRef = useRef<HTMLButtonElement>(null);
-    // const { delUser } = User();
     const { delUser } = React.useContext(AuthContext) as AuthContextType;
-
-    const login = useSelector(loginSelector);
-    const dispatch = useDispatch();
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -30,7 +21,6 @@ export const AccountDropdown = () => {
         ) {
             return;
         }
-
         setOpen(false);
     };
 
@@ -45,12 +35,9 @@ export const AccountDropdown = () => {
 
     const handleLogout = async (event: Event | React.SyntheticEvent) => {
         handleClose(event);
-        // await httpAuth.post('/logout', {}).then((res) => {
-        // dispatch(AuthSlice.actions.setLogin(false));
         delUser();
-        // });
         console.log('logout');
-
+        return navigate("/");
     }
     const handleToProfile = (event: Event | React.SyntheticEvent) => {
         handleClose(event);
@@ -106,7 +93,7 @@ export const AccountDropdown = () => {
                                     aria-labelledby="composition-button"
                                     onKeyDown={handleListKeyDown}
                                 >
-                                    <MenuItem onClick={handleClose}>My Account</MenuItem>
+                                    <MenuItem onClick={handleToProfile}>My Account</MenuItem>
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>

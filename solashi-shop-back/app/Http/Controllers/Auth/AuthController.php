@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -25,19 +26,28 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validation = Validator::make($request->all(),[
-            'name'=>'string|required|',
-            'email'=>'string|required|unique:users,email',
-            'password'=>'string|required|min:8|confirmed',
+        $validation = Validator::make($request->all(), [
+            'name' => 'string|required|',
+            'email' => 'string|required|unique:users,email',
+            'password' => 'string|required|min:8|confirmed',
         ]);
         if ($validation->fails()) {
-            return response()->json(['errors'=>$validation->getMessageBag()->toArray()], 406);
+            $error = $validation->getMessageBag()->toArray();
+            // return response()->json(['message'=>json_encode($error)], 401);
+
+            $message = "";
+            foreach ($error as $key => $value) {
+                foreach ($value as $value1) {
+                    $message = $message . "" . $value1 . "\n";
+                }
+            }
+            return response()->json(['message' => $message], 401);
         }
         $user = User::create([
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
-            'is_admin'=>0
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'is_admin' => 0
         ]);
 
         $token = auth()->login($user);
@@ -52,18 +62,17 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $validation = Validator::make($request->all(),[
-            'email'=>'string|required|exists:users,email',
-            'password'=>'string|required|min:8',
+        $validation = Validator::make($request->all(), [
+            'email' => 'string|required|exists:users,email',
+            'password' => 'string|required|min:8',
         ]);
         if ($validation->fails()) {
-            return response()->json(['errors'=>$validation->getMessageBag()->toArray()], 406);
-            return response()->json(['errors'], 422);
+            return response()->json(['message' => 'Not find account'], 401);
         }
         $credentials = $request->only(['email', 'password']);
 
-        if (! $token = JWTAuth::attempt(['email'=>$request->email, 'password'=>$request->password], $request->remember)) {
-            return response()->json(['error' => 'Not find account'], 401);
+        if (!$token = JWTAuth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
+            return response()->json(['message' => 'Not find account'], 401);
         }
 
         // if($token == true){
@@ -118,7 +127,7 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
-            'user'=> JWTAuth::user(),
+            'user' => JWTAuth::user(),
         ]);
     }
 }

@@ -3,11 +3,10 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { styled, alpha } from '@mui/material/styles';
 import ShoppingBagOutlinedIcon from '@mui/icons-material/ShoppingBagOutlined';
 import SearchIcon from '@mui/icons-material/Search';
+import MenuIcon from '@mui/icons-material/Menu';
 
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import MenuIcon from '@mui/icons-material/Menu';
-import { Api } from "./Api";
 import { AccountDropdown } from "./header/AccountDropdown";
 import { AuthContextType } from "../@types/auth";
 import { AuthContext } from "../context/authContext";
@@ -52,13 +51,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export const Header = (props: any) => {
-    // const { userCurrent } = User();
+export const Header = () => {
     const [money, setmoney] = useState();
     const [menuMobile, setMenuMobile] = useState<boolean>();
-    const { httpAuth } = Api();
-    // const login = useSelector(loginSelector);
-    // const dispatch = useDispatch();
     const { loginStatus, setLoginStatus, delUser, getMe, user } = React.useContext(AuthContext) as AuthContextType;
 
     const handleChangeMoney = (event: any) => {
@@ -97,6 +92,7 @@ export const Header = (props: any) => {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
+            {process.env.BASE_URL}
             <Container >
                 <Grid container alignItems='center' sx={{ mt: 1 }}>
                     <Grid item sm={12} md={2} sx={{ mt: 2 }} >
@@ -163,9 +159,8 @@ export const Header = (props: any) => {
                     <Container >
                         {loginStatus ?
                             (<List dense={true} sx={{ alignItems: "start", display: { xs: "none", sm: "flex", md: "flex" }, flexWrap: "wrap", justifyContent: "center" }} >
-
-                                {dataMenuAuth.map((item: any) => (
-                                    <Link to={item.link} style={{ textDecoration: "none" }} >
+                                {dataMenuAuth.map((item: any, key: number) => (
+                                    <Link to={item.link} key={key} style={{ textDecoration: "none" }} >
                                         <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
                                             {item.name}
                                         </Typography>
@@ -175,9 +170,9 @@ export const Header = (props: any) => {
                             </List>) : (
                                 <List dense={true} sx={{ alignItems: "start", display: { xs: "none", sm: "flex", md: "flex" }, flexWrap: "wrap", justifyContent: "center" }} >
 
-                                    {dataMenuGuest.map((item: any) => (
-                                        <Link to={item.link} style={{ textDecoration: "none" }} >
-                                            <Typography component="span" sx={{ m: 1, mx: 3, }}>
+                                    {dataMenuGuest.map((item: any, key: number) => (
+                                        <Link to={item.link} key={key} style={{ textDecoration: "none" }} >
+                                            <Typography component="span" sx={{ m: 1, mx: 3, }} color="white">
                                                 {item.name}
                                             </Typography>
                                         </Link>
@@ -195,8 +190,8 @@ export const Header = (props: any) => {
                     {loginStatus ?
                         (<List dense={true} sx={{ alignItems: "start", display: { xs: "block", sm: "none" }, justifyContent: "flex-start" }} >
 
-                            {dataMenuAuth.map((item: any) => (
-                                <Link to={item.link} style={{ textDecoration: "none" }} >
+                            {dataMenuAuth.map((item: any, key: number) => (
+                                <Link to={item.link} key={key} style={{ textDecoration: "none" }} color="white">
                                     <Typography component="span" sx={{ m: 1, mx: 3, }} color="white" display={"block"}>
                                         {item.name}
                                     </Typography>
@@ -206,9 +201,9 @@ export const Header = (props: any) => {
                         </List>) : (
                             <List dense={true} sx={{ alignItems: "start", display: { xs: "block", sm: "none" }, justifyContent: "flex-start" }} >
 
-                                {dataMenuGuest.map((item: any) => (
-                                    <Link to={item.link} style={{ textDecoration: "none" }} >
-                                        <Typography component="span" sx={{ m: 1, mx: 3, }} display={"block"}>
+                                {dataMenuGuest.map((item: any, key: number) => (
+                                    <Link to={item.link} key={key} style={{ textDecoration: "none" }} >
+                                        <Typography  component="span" sx={{ m: 1, mx: 3, }} display={"block"} color="white">
                                             {item.name}
                                         </Typography>
                                     </Link>

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export const User = () => {
+export const Token = () => {
 
     function getUser() {
         const tokenString: any = localStorage.getItem('auth');

@@ -1,20 +1,20 @@
 import * as React from 'react';
 
-import { AuthContextType, User } from '../@types/auth';
+import { CartContextType, Cart } from '../@types/cart';
 import { Api } from "../components/Api";
 
-export const AuthContext = React.createContext<AuthContextType | null>(null);
+export const CartContext = React.createContext<CartContextType | null>(null);
 
 type PropChildren = {
     children: React.ReactNode,
 }
 
-const AuthProvider: React.FC<PropChildren> = ({ children }) => {
+const CartProvider: React.FC<PropChildren> = ({ children }) => {
     const [loginStatus, setLoginStatus] = React.useState<boolean>(false);
-    const [user, setUser]= React.useState<any>({});
+    const [cart, setUser]= React.useState<any>({});
     // const { httpAuth } = Api();
 
-    const saveUser = (user: User) => {
+    const saveUser = (user: Cart) => {
         console.log("user", user);
         localStorage.setItem('token', user.token);
         setUser(user);
@@ -47,7 +47,7 @@ const AuthProvider: React.FC<PropChildren> = ({ children }) => {
             return {};
         }
     }
-    return <AuthContext.Provider value={{ setLoginStatus, loginStatus, user, saveUser, delUser, getMe }}>{children}</AuthContext.Provider>;
+    return <CartContext.Provider value={{ setLoginStatus, loginStatus, cart, saveUser, delUser, getMe }}>{children}</CartContext.Provider>;
 };
 
-export default AuthProvider;
+export default CartProvider;

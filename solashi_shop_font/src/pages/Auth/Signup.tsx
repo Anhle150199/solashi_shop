@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-
 import { Box, Button, Card, CardContent, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Input, InputAdornment, InputLabel, Typography } from '@mui/material'
 import { Container } from '@mui/system'
 import PersonIcon from '@mui/icons-material/Person';
@@ -8,14 +7,10 @@ import KeyIcon from '@mui/icons-material/Key';
 
 import { Link, useNavigate } from 'react-router-dom';
 import { InputComponent } from '../../components/form/InputComponent';
-
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Api } from '../../components/Api';
-import { type } from 'os';
-import { resolve } from 'path';
-// import { User } from '../../stores/User';
 import { AuthContext } from '../../context/authContext';
 import { AuthContextType } from '../../@types/auth';
 
@@ -31,18 +26,13 @@ type AuthForm = z.infer<typeof validation>;
 
 export const Signup = () => {
     let navigate = useNavigate();
-
-    const { http } = Api();
-    // const { setUser } = User();
     const { register, watch, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<AuthForm>({
         resolver: zodResolver(validation)
     });
     const { loginStatus, saveUser } = React.useContext(AuthContext) as AuthContextType;
-    // console.log(loginStatus);
     
     const onSubmit: SubmitHandler<AuthForm> = useCallback(async (value) => {
-        try {
-            const res = await http.post('/register', {
+            const res = await Api.post('/register', {
                 name: value.name,
                 email: value.email,
                 password: value.password,
@@ -57,21 +47,12 @@ export const Signup = () => {
                     token: data.access_token
                 });
                 return navigate("/");
-
             }
-
-        } catch (error:any) {
-
-            const errorsApi = error.response.data.errors;
-            console.log(error);
-            setError("email", { type: "manual", message: errorsApi.email });
-        }
     }, []);
 
     return (
         <Container sx={{ my: 3 }}>
             <Card sx={{ borderRadius: 20, mx: 4 }}>
-                {/* <CardContent sx={{p:0, pb:0}}> */}
                 <Grid container alignItems='center' justifyContent="space-between" sx={{ minHeight: "200px", display: 'table' }}>
                     <Grid item xs={12} sm={6}
                         sx={{
@@ -112,7 +93,6 @@ export const Signup = () => {
                         </Box>
                     </Grid>
                 </Grid>
-                {/* </CardContent> */}
             </Card>
         </Container>
     )

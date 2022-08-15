@@ -14,7 +14,9 @@ import { Profile } from './pages/Auth/Profile';
 // import { useSelector } from 'react-redux';
 import AuthProvider from './context/authContext';
 import { AuthMiddleComponent } from './components/AuthMiddleComponent';
-
+import { AuthContext } from './context/authContext';
+import { AuthContextType } from './@types/auth';
+import AlertProvider from './context/alertContex';
 const theme = createTheme({
   typography: {
     allVariants: {
@@ -33,24 +35,26 @@ function App() {
   // const login = useSelector(loginSelector);
   return (
     <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <main className='App'>
-          <Header />
-          <Routes>
-            <Route path='/' element={<Home />} ></Route>
-            <Route path='/shop' element={<Home />} ></Route>
-            <Route path='/sale' element={<Home />} ></Route>
-            <Route path='/services' element={<Home />} ></Route>
-            <Route path='/blog' element={<Home />} ></Route>
-            <Route path='/contact' element={<Home />} ></Route>
+      <AlertProvider>
+        <AuthProvider>
+          <main className='App'>
+            <Header />
+            <Routes>
+              <Route path='/' element={<Home />} ></Route>
+              <Route path='/shop' element={<Home />} ></Route>
+              <Route path='/sale' element={<Home />} ></Route>
+              <Route path='/services' element={<Home />} ></Route>
+              <Route path='/blog' element={<Home />} ></Route>
+              <Route path='/contact' element={<Home />} ></Route>
 
-            <Route path='/profile' element={<AuthMiddleComponent><Profile /></AuthMiddleComponent>} ></Route>
-            <Route path='/signin' element={<Signin />} ></Route>
-            <Route path='/signup' element={<Signup />} ></Route>
-          </Routes>
-          <Footer />
-        </main>
-      </AuthProvider>
+              <Route path='/profile' element={<AuthMiddleComponent><Profile /></AuthMiddleComponent>} ></Route>
+              <Route path='/signin' element={<Signin />} ></Route>
+              <Route path='/signup' element={<Signup />} ></Route>
+            </Routes>
+            <Footer />
+          </main>
+        </AuthProvider>
+      </AlertProvider>
     </ThemeProvider>
 
   );
