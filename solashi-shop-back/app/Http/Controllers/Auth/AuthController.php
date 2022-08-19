@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -24,25 +26,8 @@ class AuthController extends Controller
     }
 
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $validation = Validator::make($request->all(), [
-            'name' => 'string|required|',
-            'email' => 'string|required|unique:users,email',
-            'password' => 'string|required|min:8|confirmed',
-        ]);
-        if ($validation->fails()) {
-            $error = $validation->getMessageBag()->toArray();
-            // return response()->json(['message'=>json_encode($error)], 401);
-
-            $message = "";
-            foreach ($error as $key => $value) {
-                foreach ($value as $value1) {
-                    $message = $message . "" . $value1 . "\n";
-                }
-            }
-            return response()->json(['message' => $message], 401);
-        }
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -51,7 +36,6 @@ class AuthController extends Controller
         ]);
 
         $token = auth()->login($user);
-        // return response()->json(['success' => 'Unauthorized'], 200);
         return $this->respondWithToken($token);
     }
 
@@ -60,25 +44,13 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $validation = Validator::make($request->all(), [
-            'email' => 'string|required|exists:users,email',
-            'password' => 'string|required|min:8',
-        ]);
-        if ($validation->fails()) {
+        $ttl = ($request->remember === true) ? env('JWT_REMEMBER_TTL') : env('JWT_TTL');
+
+        if (!$token = auth()->setTTL($ttl)->attempt(['email' => $request->email, 'password' => $request->password], true)) {
             return response()->json(['message' => 'Not find account'], 401);
         }
-        $credentials = $request->only(['email', 'password']);
-
-        if (!$token = JWTAuth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
-            return response()->json(['message' => 'Not find account'], 401);
-        }
-
-        // if($token == true){
-        //     return
-        // }
-
         return $this->respondWithToken($token);
     }
 

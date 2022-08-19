@@ -1,25 +1,18 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 
-import { Alert, AlertTitle, Box, Button, Card, CardContent, Checkbox, FormControl, FormControlLabel, FormGroup, Grid, Input, InputAdornment, InputLabel, Typography } from '@mui/material'
+import { Box, Button, Card, Grid, Typography } from '@mui/material'
 import { Container } from '@mui/system'
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import KeyIcon from '@mui/icons-material/Key';
-
-import { Link } from 'react-router-dom';
 import { InputComponent } from '../../components/form/InputComponent';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Api } from '../../components/Api';
 import { AuthContext } from '../../context/authContext';
 import { AuthContextType, User } from '../../@types/auth';
-import { AlertComponent } from '../../components/header/AlertComponent';
-import { AlertContext } from '../../context/alertContex';
-import { AlertContextType } from '../../@types/alert';
+import { ToastSuccess } from '../../components/header/Toast';
 
 // Validation form
 const validation = z.object({
@@ -40,24 +33,18 @@ export const Profile = () => {
     const { register, watch, handleSubmit, setError, formState: { errors, isSubmitting, isValid } } = useForm<AccountForm>({
         resolver: zodResolver(validation)
     });
-    const { register: registerPass, handleSubmit: handleSubmitPass, formState: { errors: errorPass, isSubmitting: isSubmittingPass } } = useForm<PassForm>({
+    const { register: registerPass, reset: resetPass, handleSubmit: handleSubmitPass, formState: { errors: errorPass, isSubmitting: isSubmittingPass } } = useForm<PassForm>({
         resolver: zodResolver(validationPass)
     });
     const { user, loginStatus, saveUser, getMe } = React.useContext(AuthContext) as AuthContextType;
-    const { open, setAlert } = React.useContext(AlertContext) as AlertContextType;
+
     const onSubmit: SubmitHandler<AccountForm> = useCallback(async (value) => {
         const res = await Api.post('/update-me', {
             name: value.name,
             email: value.email,
         });
         if (res) {
-            console.log(res);
-            setAlert({
-                status: 'success',
-                title: 'Success',
-                body: res.data.message
-            });
-            // let data = res.data;
+            ToastSuccess(res.data.message);
             saveUser({
                 ...user,
                 name: value.name,
@@ -67,15 +54,14 @@ export const Profile = () => {
     }, []);
     const onSubmitPass: SubmitHandler<PassForm> = useCallback(async (value) => {
         const res = await Api.post('/update-password', {
-            old_pass: value.old_password,
+            old_password: value.old_password,
+            password: value.password,
+            password_confirmation: value.confirm_password
         });
         if (res) {
             console.log(res);
-            let data = res.data;
-            saveUser({
-                ...user,
-                ...data.user,
-            });
+            ToastSuccess(res.data.message);
+            resetPass();
         }
     }, []);
     useEffect(() => {
@@ -85,7 +71,6 @@ export const Profile = () => {
     }, []);
     return (
         <Container sx={{ my: 3 }}>
-            {open ? (<AlertComponent></AlertComponent>) : null}
             <Card sx={{ borderRadius: '20px', mx: 4, mb: 4 }}>
                 <Grid container alignItems='center' justifyContent="space-between" sx={{ minHeight: "200px", display: 'table' }}>
                     <Box p={3} px={5}>
@@ -103,7 +88,7 @@ export const Profile = () => {
             <Card sx={{ borderRadius: '20px', mx: 4 }}>
                 <Grid container alignItems='center' justifyContent="space-between" sx={{ minHeight: "200px", display: 'table' }}>
                     <Box p={3} px={5}>
-                        <form onSubmit={handleSubmit(onSubmit)}>
+                        <form onSubmit={handleSubmitPass(onSubmitPass)}>
                             <Typography variant="h4" fontSize={24} fontWeight={600} py={1} align='center'> Change Your Password</Typography>
                             <InputComponent name="old_password" type="password" label="Old Password" register={registerPass} icon={<KeyIcon />} error={errorPass.old_password} />
                             <InputComponent name="password" type="password" label="Password" register={registerPass} icon={<KeyIcon />} error={errorPass.password} />

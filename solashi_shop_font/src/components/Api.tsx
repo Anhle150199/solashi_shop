@@ -1,4 +1,6 @@
 import  Axios, { AxiosRequestConfig } from 'axios'
+import { toast } from 'react-toastify';
+import { ToastError } from './header/Toast';
 function authRequestInterceptor(config: AxiosRequestConfig) {
     const token = localStorage.getItem('token');
     if (token) {
@@ -26,18 +28,8 @@ Api.interceptors.response.use(
     (error) => {
         const message = error.response?.data?.message || error.message;
         const code = error.response.status;
-        console.log(message);
         console.log(error);
-        console.log(process.env.BASE_URL);
-        if(code !== '401')
-        alert(message);
-        
-        // useNotificationStore.getState().addNotification({
-        //     type: 'error',
-        //     title: 'Error',
-        //     message,
-        // });
-
+        ToastError(message);
         return Promise.reject(error);
     }
 );

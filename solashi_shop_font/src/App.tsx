@@ -16,7 +16,10 @@ import AuthProvider from './context/authContext';
 import { AuthMiddleComponent } from './components/AuthMiddleComponent';
 import { AuthContext } from './context/authContext';
 import { AuthContextType } from './@types/auth';
-import AlertProvider from './context/alertContex';
+import BaseProvider from './context/BaseProvider';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const theme = createTheme({
   typography: {
     allVariants: {
@@ -35,26 +38,25 @@ function App() {
   // const login = useSelector(loginSelector);
   return (
     <ThemeProvider theme={theme}>
-      <AlertProvider>
-        <AuthProvider>
-          <main className='App'>
-            <Header />
-            <Routes>
-              <Route path='/' element={<Home />} ></Route>
-              <Route path='/shop' element={<Home />} ></Route>
-              <Route path='/sale' element={<Home />} ></Route>
-              <Route path='/services' element={<Home />} ></Route>
-              <Route path='/blog' element={<Home />} ></Route>
-              <Route path='/contact' element={<Home />} ></Route>
+      <BaseProvider>
+        <main className='App'>
+          <ToastContainer/>
+          <Header />
+          <Routes>
+            <Route path='/' element={<Home />} ></Route>
+            <Route path='/shop' element={<Home />} ></Route>
+            <Route path='/sale' element={<Home />} ></Route>
+            <Route path='/services' element={<Home />} ></Route>
+            <Route path='/blog' element={<Home />} ></Route>
+            <Route path='/contact' element={<Home />} ></Route>
 
-              <Route path='/profile' element={<AuthMiddleComponent><Profile /></AuthMiddleComponent>} ></Route>
-              <Route path='/signin' element={<Signin />} ></Route>
-              <Route path='/signup' element={<Signup />} ></Route>
-            </Routes>
-            <Footer />
-          </main>
-        </AuthProvider>
-      </AlertProvider>
+            <Route path='/profile' element={<AuthMiddleComponent><Profile /></AuthMiddleComponent>} ></Route>
+            <Route path='/signin' element={<Signin />} ></Route>
+            <Route path='/signup' element={<Signup />} ></Route>
+          </Routes>
+          <Footer />
+        </main>
+      </BaseProvider>
     </ThemeProvider>
 
   );

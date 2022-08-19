@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import { AuthContextType, User } from '../@types/auth';
 import { Api } from "../components/Api";
@@ -13,6 +14,7 @@ const AuthProvider: React.FC<PropChildren> = ({ children }) => {
     const [loginStatus, setLoginStatus] = React.useState<boolean>(false);
     const [user, setUser]= React.useState<any>({});
     // const { httpAuth } = Api();
+    let navigate = useNavigate();
 
     const saveUser = (user: User) => {
         console.log("user", user);
@@ -42,9 +44,12 @@ const AuthProvider: React.FC<PropChildren> = ({ children }) => {
                 saveUser(newUser)
                 return newUser;
             }
-        } catch (error) {
-            delUser();
-            return {};
+        } catch (error:any) {
+            console.log(error);
+            if(error.response.status == '401'){
+                delUser();
+            }
+            return navigate('/');
         }
     }
     return <AuthContext.Provider value={{ setLoginStatus, loginStatus, user, saveUser, delUser, getMe }}>{children}</AuthContext.Provider>;

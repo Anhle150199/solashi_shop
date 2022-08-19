@@ -29,4 +29,5 @@ Route::group(['middleware' => 'api'], function () {
     Route::post('me', [AuthController::class, 'me']);
 
     Route::post('update-me', [AccountController::class, 'updateAccount']);
+    Route::post('update-password', [AccountController::class, 'updatePassword']);
 });
