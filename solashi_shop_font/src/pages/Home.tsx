@@ -7,6 +7,9 @@ import 'react-slideshow-image/dist/styles.css';
 import { NEW_PRODUCT, POPULAR_PRODUCT, SALE_PRODUCT } from "../@lib/titleCategoryHome";
 
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { ProductList } from '../components/ProductList';
+import { ProductType } from '../@types/cart';
 
 
 const slideImages = [
@@ -45,19 +48,22 @@ const productList = [
   {
     title: "New",
     img: 'images/example/sp0.webp',
-    price: "300000",
+    price: 300000,
+    priceSale: 300000,
     id: 1,
   },
   {
     title: "Popular",
     img: 'images/example/1.png',
-    price: "300000",
+    price: 300000,
+    priceSale: 300000,
     id: 2
   },
   {
     title: "Sale",
     img: 'images/example/sp1.webp',
-    price: "300000",
+    price: 300000,
+    priceSale: 300000,
     id: 3
   }
 ];
@@ -65,25 +71,29 @@ const productList2 = [
   {
     title: "New2",
     img: 'images/example/sp1.webp',
-    price: "300000",
+    price: 300000,
+    priceSale: 300000,
     id: 1,
   },
   {
     title: "Popular2",
     img: 'images/example/sp0.webp',
-    price: "300000",
+    price: 300000,
+    priceSale: 300000,
     id: 2
   },
   {
     title: "Sale2",
     img: 'images/example/sp3.webp',
-    price: "300000",
+    price: 300000,
+    priceSale: 300000,
     id: 3
   },
   {
     title: "Sale2",
     img: 'images/example/sp4.webp',
-    price: "300000",
+    price: 300000,
+    priceSale: 300000,
     id: 3
   }
 ]
@@ -91,26 +101,28 @@ const productList3 = [
   {
     title: "New3",
     img: 'images/example/sp0.webp',
-    price: "300000",
+    price: 300000,
+    priceSale: 300000,
     id: 1,
   },
   {
     title: "Popular3",
     img: 'images/example/sp1.webp',
-    price: "300000",
+    price: 300000,
+    priceSale: 300000,
     id: 2
   },
   {
     title: "Sale3",
     img: 'images/example/sp1.webp',
-    price: "300000",
+    price: 300000,
+    priceSale: 300000,
     id: 3
   }
 ]
 type TitleHome = { title: string, active: boolean };
-type Products = { title: string, img: string, price: string, id: number };
 export const Home = () => {
-  const [products, setProducts] = useState<Products[]>(productList);
+  const [products, setProducts] = useState<ProductType[]>(productList);
   const [titles, setTitle] = useState<TitleHome[]>(listTitle);
 
   const getProductsList = (type: string) => {
@@ -162,23 +174,7 @@ export const Home = () => {
               variant='h6' key={item.title} mx={2} sx={{ "cursor": "pointer", fontWeight: '600', opacity: "50%" }}>{item.title}</Typography>
         )}
       </Box>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-        {products.map((item: any) => (
-          <Card raised sx={{ width: 250, m: 2, }}>
-            <CardMedia component="img" height={350} image={item.img}
-            />
-            <Box display={'flex'} justifyContent={'center'} alignItems={'center'}>
-              <Box mx={5} >
-                <Link to={'/detail/' + item.id} key={item.id} style={{ textDecoration: "none", color: "black" }}>
-                  <Typography variant='h6' align='center'>{item.title}</Typography>
-                  <Typography align='center'>{item.price} đ</Typography>
-                </Link>
-              </Box>
-              <AddShoppingCartIcon onClick={(event)=>handleAddToCard(item.id)}/>
-            </Box>
-          </Card>
-        ))}
-      </Box>
+      <ProductList products={products}/>
     </Container >
   )
 }
