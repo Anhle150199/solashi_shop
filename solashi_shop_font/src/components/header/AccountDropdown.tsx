@@ -8,7 +8,7 @@ export const AccountDropdown = () => {
     let navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const anchorRef = useRef<HTMLButtonElement>(null);
-    const { delUser } = React.useContext(AuthContext) as AuthContextType;
+    const { user, delUser } = React.useContext(AuthContext) as AuthContextType;
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -69,7 +69,7 @@ export const AccountDropdown = () => {
             >
                 Account
             </Typography >
-            <Popper
+            <Popper sx={{zIndex:100}}
                 open={open}
                 anchorEl={anchorRef.current}
                 role={undefined}
@@ -85,8 +85,8 @@ export const AccountDropdown = () => {
                                 placement === 'bottom-start' ? 'left top' : 'left bottom',
                         }}
                     >
-                        <Paper>
-                            <ClickAwayListener onClickAway={handleClose}>
+                        <Paper >
+                            <ClickAwayListener onClickAway={handleClose} >
                                 <MenuList
                                     autoFocusItem={open}
                                     id="composition-menu"
@@ -94,6 +94,8 @@ export const AccountDropdown = () => {
                                     onKeyDown={handleListKeyDown}
                                 >
                                     <MenuItem onClick={handleToProfile}>My Account</MenuItem>
+
+                                    {user && (user.is_admin == 1) &&<MenuItem onClick={handleToProfile}>Manager</MenuItem>}
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>

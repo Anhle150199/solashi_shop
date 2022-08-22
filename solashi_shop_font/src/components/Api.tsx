@@ -1,5 +1,4 @@
 import  Axios, { AxiosRequestConfig } from 'axios'
-import { toast } from 'react-toastify';
 import { ToastError } from './header/Toast';
 function authRequestInterceptor(config: AxiosRequestConfig) {
     const token = localStorage.getItem('token');
@@ -27,7 +26,7 @@ Api.interceptors.response.use(
     },
     (error) => {
         const message = error.response?.data?.message || error.message;
-        const code = error.response.status;
+        // const code = error.response.status;
         console.log(error);
         ToastError(message);
         return Promise.reject(error);
