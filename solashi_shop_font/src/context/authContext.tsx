@@ -13,7 +13,6 @@ type PropChildren = {
 const AuthProvider: React.FC<PropChildren> = ({ children }) => {
     const [loginStatus, setLoginStatus] = React.useState<boolean>(false);
     const [user, setUser]= React.useState<any>({});
-    // const { httpAuth } = Api();
     let navigate = useNavigate();
 
     const saveUser = (user: User) => {

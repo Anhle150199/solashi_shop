@@ -1,6 +1,6 @@
 import { Box, Card, CardMedia, Container, ImageList, ImageListItem, ImageListItemBar, Typography } from '@mui/material'
 import { color } from '@mui/system';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Slide } from 'react-slideshow-image';
 import 'react-slideshow-image/dist/styles.css';
@@ -148,9 +148,14 @@ export const Home = () => {
     getProductsList(item.title);
   }
 
-  const handleAddToCard = (id: number)=>{
-    
+  const handleAddToCard = (id: number) => {
+
   }
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <Container>
       <Slide>
@@ -174,7 +179,7 @@ export const Home = () => {
               variant='h6' key={item.title} mx={2} sx={{ "cursor": "pointer", fontWeight: '600', opacity: "50%" }}>{item.title}</Typography>
         )}
       </Box>
-      <ProductList products={products}/>
+      <ProductList products={products} />
     </Container >
   )
 }

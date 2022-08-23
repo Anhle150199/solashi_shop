@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ProductType } from '../@types/cart';
 import { ProductList } from '../components/ProductList';
+import { ThreadHeader } from '../components/header/ThreadHeader';
 
 const imgpre = ['/images/example/sp1.webp', '/images/example/sp0.webp', '/images/example/sp3.webp', '/images/example/sp4.webp']
 const productList = [
@@ -38,6 +39,16 @@ const productList = [
       id: 3
     }
   ]
+  const thread = [
+    {
+        title: "Home",
+        link: '/'
+    },
+    {
+        title: "Our Shop",
+        link: '/our-shop'
+    },
+  ]
 export const ProductDetail = () => {
     const [product, setProduct] = useState<ProductType>();
     const [productRelate, setProductRelate] = useState<ProductType[]>(productList);
@@ -51,32 +62,29 @@ export const ProductDetail = () => {
     }
 
     useEffect(() => {
+        window.scrollTo(0, 0)
         const images = imgpre;
         setActiveImage(images[0]);
     }, [])
-
+    
     return (
         <Container>
             <Box my={2}>
-                <Box mb={4}>
-                    <Link to={'/'} style={{ textDecoration: "none", color: 'black' }}><Typography component={'span'}> Home</Typography></Link>
-                    <Typography component={'span'}> {'>'}</Typography>
-                    <Link to={'/our-shop'} style={{ textDecoration: "none", color: 'black' }}><Typography component={'span'}> Our Shop</Typography></Link>
-                    <Typography component={'span'}> {'>'}</Typography>
-                    <Typography component={'span'}> {'This title product'}</Typography>
-                </Box>
+                {
+                // product &&
+                 (<ThreadHeader threads={[...thread, {title: "xxxx", link: '#'}]}/>)}
                 <Grid container p={0} spacing={2}>
                     <Grid item sm={12} md={6} >
                         {activeImage && images &&
                             <Grid container spacing={2}>
-                                <Grid p={0} item xs={9} >
+                                <Grid item xs={9} >
                                     <Card raised sx={{ width: '100%' }}>
                                         <CardMedia component="img" height={'auto'} sx={{ maxHeight: 750 }} image={activeImage} />
                                     </Card>
                                 </Grid>
                                 <Grid item xs={3} sx={{ overflowX: 'hidden', padding: 0 }} maxHeight={530}>
-                                    {images.map((item: any) => (
-                                        <Card raised sx={{ width: '95%', mb: 2, }}>
+                                    {images.map((item: any, key: number) => (
+                                        <Card raised sx={{ width: '95%', mb: 2, }} key={key}>
                                             <CardMedia component="img" height={'auto'} image={item} />
                                         </Card>
                                     ))}

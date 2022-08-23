@@ -7,9 +7,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { AccountDropdown } from "./header/AccountDropdown";
-import { AuthContextType } from "../@types/auth";
-import { AuthContext } from "../context/authContext";
+import { AccountDropdown } from "./AccountDropdown";
+import { AuthContextType } from "../../@types/auth";
+import { AuthContext } from "../../context/authContext";
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -71,7 +71,7 @@ export const Header = () => {
 
     const dataMenuAuth = [
         createData("Home", "/"),
-        createData("Our Shop", "/shop"),
+        createData("Our Shop", "/our-shop"),
         createData("On Sale", "/sale"),
         createData("Our Services", "/services"),
         createData("Blog", "/blog"),
