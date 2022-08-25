@@ -22,6 +22,10 @@ import { ProductDetail } from './pages/ProductDetail';
 import { Shop } from './pages/Shop';
 import { DashBoard } from './pages/Admin/DashBoard';
 import { AdminMiddleware } from './components/middleware/AdminMiddleware';
+import { Guest } from './components/layout/Guest';
+import { Admin } from './components/layout/Admin';
+import { Products } from './pages/Admin/Products';
+import { Categoris } from './pages/Admin/Categoris';
 
 const theme = createTheme({
   typography: {
@@ -44,27 +48,26 @@ function App() {
       
         <main className='App'>
           <ToastContainer />
-          <Header />
           <Routes>
-            <Route path='/' element={<Home />} ></Route>
-            <Route path='/our-shop' element={<Shop />} ></Route>
-            <Route path='/sale' element={<Sale />} ></Route>
-            <Route path='/services' element={<Home />} ></Route>
-            <Route path='/blog' element={<Home />} ></Route>
-            <Route path='/contact' element={<Home />} ></Route>
-            <Route path='/detail/:id' element={<ProductDetail />} ></Route>
+            <Route path='/' element={<Guest><Home /></Guest>} ></Route>
+            <Route path='/our-shop' element={<Guest><Shop /></Guest>} ></Route>
+            {/* <Route path='/sale' element={<Guest><Sale /></Guest>} ></Route> */}
+            {/* <Route path='/services' element={<Home />} ></Route>
+            <Route path='/blog' element={<Home />} ></Route> */}
+            {/* <Route path='/contact' element={<Home />} ></Route> */}
+            <Route path='/detail/:id' element={<Guest><ProductDetail /></Guest>} ></Route>
 
-            {/* Route for Au */}
-            <Route path='/profile' element={<AuthMiddleComponent><Profile /></AuthMiddleComponent>} ></Route>
-            <Route path='/signin' element={<Signin />} ></Route>
-            <Route path='/signup' element={<Signup />} ></Route>
+            {/* Route for Auth */}
+            <Route path='/profile' element={<Guest><AuthMiddleComponent><Profile /></AuthMiddleComponent></Guest>} ></Route>
+            <Route path='/signin' element={<Guest><Signin /></Guest>} ></Route>
+            <Route path='/signup' element={<Guest><Signup /></Guest>} ></Route>
 
             {/* Route Admin */}
             {/* <Route path='/dashboard' element={<AdminMiddleware><DashBoard /></AdminMiddleware>}></Route> */}
-            <Route path='/dashboard' element={<DashBoard />}></Route>
-
+            <Route path='/dashboard' element={<Admin><DashBoard /></Admin>}></Route>
+            <Route path='/categoris-manager' element={<Admin><Categoris /></Admin>}></Route>
+            <Route path='/products-manager' element={<Admin><Products /></Admin>}></Route>
           </Routes>
-          <Footer />
         </main>
     </ThemeProvider>
 

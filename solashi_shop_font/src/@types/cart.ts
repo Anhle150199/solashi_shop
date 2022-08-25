@@ -1,24 +1,119 @@
-export interface Cart {
-    id: number;
-    name: string;
-    email: string;
-    token: string;
-    is_admin: number;
+export interface CartType {
+    id: number,
+    code: string,
+    name: string,
+    count: number,
+    price: number,
 }
 
 export type ProductType = {
     id: number,
-    title: string, 
-    img: string, 
+    code: string,
+    name: string, 
+    description: string, 
+    category: string, 
     price: number,
-    priceSale: number,
+    sale: number,
+    image: string,
+    is_top: number,
+    created_at: string,
+    updated_at: string,
 }
 
 export type CartContextType = {
-    loginStatus: boolean;
-    cart: Cart;
-    setLoginStatus: (status: boolean) => void;
-    saveUser: (user: Cart) => void;
-    delUser: () => void;
-    getMe: () => Promise<Cart | null>;
+    cart: CartType[];
 };
+
+export const dataExample: ProductType[] = [
+    {
+        id: 1,
+        code: "xxx",
+        name: "sp1",
+        description: "string stringstring string string",
+        category: "string",
+        price: 100000,
+        sale: 30,
+        image: "/images/example/sp0.webp",
+        is_top: 0,
+        created_at: "string",
+        updated_at: "string",
+    },
+    {
+        id: 2,
+        code: "xxx",
+        name: "sp1",
+        description: "string stringstring string string",
+        category: "string",
+        price: 100000,
+        sale: 30,
+        image: "/images/example/sp0.webp",
+        is_top: 1,
+        created_at: "string",
+        updated_at: "string",
+    },
+    {
+        id: 3,
+        code: "xxx",
+        name: "sp1",
+        description: "string stringstring string string",
+        category: "string",
+        price: 100000,
+        sale: 30,
+        image: "/images/example/sp0.webp",
+        is_top: 0,
+        created_at: "string",
+        updated_at: "string",
+    },
+    {
+        id: 4,
+        code: "xxx",
+        name: "sp1",
+        description: "string stringstring string string",
+        category: "string",
+        price: 100000,
+        sale: 30,
+        image: "/images/example/sp0.webp",
+        is_top: 0,
+        created_at: "string",
+        updated_at: "string",
+    },
+    {
+        id: 5,
+        code: "xxx",
+        name: "sp1",
+        description: "string stringstring string string",
+        category: "string",
+        price: 100000,
+        sale: 30,
+        image: "/images/example/sp0.webp",
+        is_top: 0,
+        created_at: "string",
+        updated_at: "string",
+    },
+    {
+        id: 6,
+        code: "xxx",
+        name: "sp1",
+        description: "string stringstring string string",
+        category: "string",
+        price: 100000,
+        sale: 30,
+        image: "/images/example/sp0.webp",
+        is_top: 0,
+        created_at: "string",
+        updated_at: "string",
+    },
+    {
+        id: 7,
+        code: "xxx",
+        name: "sp1",
+        description: "string stringstring string string",
+        category: "string",
+        price: 100000,
+        sale: 30,
+        image: "/images/example/sp0.webp",
+        is_top: 0,
+        created_at: "string",
+        updated_at: "string",
+    },
+]

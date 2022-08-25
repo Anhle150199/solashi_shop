@@ -15,11 +15,11 @@ export const ProductList = (props:{products:ProductType[]}) => {
         <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
             {props.products.map((item: ProductType) => (
                 <Card raised sx={{ width: 250, m: 2, mb: 4 }}>
-                    <CardMedia component="img" height={350} image={item.img} />
+                    <CardMedia component="img" height={350} image={item.image} />
                     <Box display={'flex'} justifyContent={'center'} alignItems={'center'} mb={1}>
                         <Box mx={5} >
                             <Link to={'/detail/' + item.id} key={item.id} style={{ textDecoration: "none", color: "black" }}>
-                                <Typography variant='h6' align='center'>{item.title}</Typography>
+                                <Typography variant='h6' align='center'>{item.name}</Typography>
                                 <Typography align='center'>{item.price} đ</Typography>
                             </Link>
                         </Box>

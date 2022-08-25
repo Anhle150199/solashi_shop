@@ -9,7 +9,7 @@ import { NEW_PRODUCT, POPULAR_PRODUCT, SALE_PRODUCT } from "../@lib/titleCategor
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { ProductList } from '../components/ProductList';
-import { ProductType } from '../@types/cart';
+import { dataExample, ProductType } from '../@types/cart';
 
 
 const slideImages = [
@@ -44,82 +44,12 @@ const listTitle = [
     active: false
   }
 ]
-const productList = [
-  {
-    title: "New",
-    img: 'images/example/sp0.webp',
-    price: 300000,
-    priceSale: 300000,
-    id: 1,
-  },
-  {
-    title: "Popular",
-    img: 'images/example/1.png',
-    price: 300000,
-    priceSale: 300000,
-    id: 2
-  },
-  {
-    title: "Sale",
-    img: 'images/example/sp1.webp',
-    price: 300000,
-    priceSale: 300000,
-    id: 3
-  }
-];
-const productList2 = [
-  {
-    title: "New2",
-    img: 'images/example/sp1.webp',
-    price: 300000,
-    priceSale: 300000,
-    id: 1,
-  },
-  {
-    title: "Popular2",
-    img: 'images/example/sp0.webp',
-    price: 300000,
-    priceSale: 300000,
-    id: 2
-  },
-  {
-    title: "Sale2",
-    img: 'images/example/sp3.webp',
-    price: 300000,
-    priceSale: 300000,
-    id: 3
-  },
-  {
-    title: "Sale2",
-    img: 'images/example/sp4.webp',
-    price: 300000,
-    priceSale: 300000,
-    id: 3
-  }
-]
-const productList3 = [
-  {
-    title: "New3",
-    img: 'images/example/sp0.webp',
-    price: 300000,
-    priceSale: 300000,
-    id: 1,
-  },
-  {
-    title: "Popular3",
-    img: 'images/example/sp1.webp',
-    price: 300000,
-    priceSale: 300000,
-    id: 2
-  },
-  {
-    title: "Sale3",
-    img: 'images/example/sp1.webp',
-    price: 300000,
-    priceSale: 300000,
-    id: 3
-  }
-]
+const productList: ProductType[] = dataExample;
+
+const productList2: ProductType[] = dataExample;
+
+const productList3: ProductType[] = dataExample;
+
 type TitleHome = { title: string, active: boolean };
 export const Home = () => {
   const [products, setProducts] = useState<ProductType[]>(productList);

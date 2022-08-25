@@ -1,7 +1,7 @@
 import { Grid, Typography } from '@mui/material'
 import { Container } from '@mui/system'
 import React, { useEffect, useState } from 'react'
-import { ProductType } from '../@types/cart'
+import { dataExample, ProductType } from '../@types/cart'
 import { ThreadHeader } from '../components/header/ThreadHeader'
 import { ProductList } from '../components/ProductList'
 import { SideBar } from '../components/SideBar'
@@ -16,36 +16,7 @@ const thread = [
         link: '/our-shop'
     },
 ]
-const productList = [
-    {
-      title: "New2",
-      img: '/images/example/sp1.webp',
-      price: 300000,
-      priceSale: 300000,
-      id: 1,
-    },
-    {
-      title: "Popular2",
-      img: '/images/example/sp0.webp',
-      price: 300000,
-      priceSale: 300000,
-      id: 2
-    },
-    {
-      title: "Sale2",
-      img: '/images/example/sp3.webp',
-      price: 300000,
-      priceSale: 300000,
-      id: 3
-    },
-    {
-      title: "Sale2",
-      img: '/images/example/sp4.webp',
-      price: 300000,
-      priceSale: 300000,
-      id: 3
-    }
-  ]
+const productList: ProductType[] = dataExample;
 const menus = [
     {
         title: "Men's Fashion",
@@ -177,7 +148,7 @@ export const Shop = () => {
                     <SideBar typePage='shop' />
                 </Grid>
                 <Grid item xs={9} >
-                <ProductList products={productCategory}/>
+                    <ProductList products={productCategory} />
                 </Grid>
             </Grid>
         </Container>

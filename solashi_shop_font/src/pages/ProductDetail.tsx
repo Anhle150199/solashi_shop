@@ -4,41 +4,13 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import { ProductType } from '../@types/cart';
+import { dataExample, ProductType } from '../@types/cart';
 import { ProductList } from '../components/ProductList';
 import { ThreadHeader } from '../components/header/ThreadHeader';
 
 const imgpre = ['/images/example/sp1.webp', '/images/example/sp0.webp', '/images/example/sp3.webp', '/images/example/sp4.webp']
-const productList = [
-    {
-      title: "New2",
-      img: '/images/example/sp1.webp',
-      price: 300000,
-      priceSale: 300000,
-      id: 1,
-    },
-    {
-      title: "Popular2",
-      img: '/images/example/sp0.webp',
-      price: 300000,
-      priceSale: 300000,
-      id: 2
-    },
-    {
-      title: "Sale2",
-      img: '/images/example/sp3.webp',
-      price: 300000,
-      priceSale: 300000,
-      id: 3
-    },
-    {
-      title: "Sale2",
-      img: '/images/example/sp4.webp',
-      price: 300000,
-      priceSale: 300000,
-      id: 3
-    }
-  ]
+const productList: ProductType[] = dataExample;
+
   const thread = [
     {
         title: "Home",
